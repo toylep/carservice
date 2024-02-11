@@ -12,7 +12,9 @@ export const useUserStorage = defineStore('userStore',{
         auth:{
             username:'Не авторизован',
             password:'Не авторизован',
-        }
+        },
+        users:[]
+
     }),
     actions:{
         async addBalance(balance){
@@ -40,9 +42,18 @@ export const useUserStorage = defineStore('userStore',{
                  })
             }
             else alert('Вы не авторизованы')
-            
-             
+        },
+        async getUserList(){
+            axios.get('/api/users/list')
+            .then(resp=>resp.data)
+            .then(data=>this.users=data)
+        },
+        async changeAuthority(id){
+            axios.patch('api/users/'+id)
+            .then(resp=>resp.data)
+            .then(data => this.users.filter((el)=>el.id === data.id)[0] = data)
         }
+        
 
     }
 })

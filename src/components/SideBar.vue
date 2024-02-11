@@ -25,7 +25,7 @@
 
                             </RouterLink></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" v-for="cat in categoryStorage.categories">{{cat.name}}</a></li>
+                            <li><a class="dropdown-item" v-for="cat in categoryStorage.categories" @click="changeCategory(cat.id)">{{cat.name}}</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -37,8 +37,20 @@
 </template>
 <script setup>
 import { useCategoryStorage } from '@/storages/CategoryStorage';
+import { useCarStorage } from '@/storages/CarStorages';
 import { ref,onBeforeMount } from 'vue';
+
 const categoryStorage = ref(useCategoryStorage())
+const carStorage = ref(useCarStorage())
+
+const changeCategory = async (id)=>{
+    carStorage.value.params.category = id
+    carStorage.value.setCarsFromServerWithCategory(
+        carStorage.value.params.page,
+        carStorage.value.params.category
+    )
+}
+
 onBeforeMount(()=>{
     categoryStorage.value.getCategoriesFromServer()
 })

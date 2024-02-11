@@ -22,6 +22,9 @@ export const useRentStorage = defineStore('rentStore',{
                 if (!(auth.username==='Не авторизован'))
                     alert('Не получилось получить данные о ваших арендах')
             } 
+        },
+        async deleteRent(id){
+            axios.delete('api/cars/rent/'+id)
         }
     }
 })

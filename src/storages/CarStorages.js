@@ -4,7 +4,11 @@ import axios from 'axios'
 export const useCarStorage = defineStore('categoryStore',{
     state: () => ({
         cars:[],
-        change_id:0
+        change_id:0,
+        params:{
+            page: 1,
+            category: null,
+        }
     }),
     actions:{
         setCars(cars){
@@ -13,7 +17,7 @@ export const useCarStorage = defineStore('categoryStore',{
         addCar(car){
             this.cars.push(car)
         },
-        async setCarsFromServer(page){
+        async setCarsFromServer(page=1){
             try {
                 const response = await axios.get(
                     '/api/cars/list',{
@@ -30,13 +34,13 @@ export const useCarStorage = defineStore('categoryStore',{
                 console.log(err)
             }
         },
-        async setCarsFromServerWithCategory(category_id,page){
+        async setCarsFromServerWithCategory(){
             try {
                 const response = await axios.get(
                     '/api/cars/list',{
                         params:{
-                            category:category_id,
-                            page:page
+                            category:this.params.category,
+                            page:this.params.page
                         }
                     }
                     )

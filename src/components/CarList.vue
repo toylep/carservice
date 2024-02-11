@@ -39,8 +39,8 @@
                             <h5 class="card-title">Car id: {{ car.id }}</h5>
                             <h5 class="card-title">{{ car.mark }} {{ car.model }}</h5>
                             <p class="card-text">{{ car.description }}</p>
-                            <!-- <h5 class="card-text">{{ car.category.price }}$ В мес.</h5> -->
-                            <button href="#" class="btn btn-primary">Арендовать</button>
+                            <h5 class="card-text">{{ car.category.price }}$/мес.</h5>
+                            <RentCarModal :car="car"></RentCarModal>
                             <button class="btn btn-warning" @click="reg_button_click(index)"><i class="bi bi-pencil"></i></button>
                             <button class="btn btn-danger" @click="deleteCar(car.id)"><i class="bi bi-trash"></i></button>
                         </div>
@@ -48,22 +48,21 @@
                     
                 </div>
             </div>
-            <div  v-else
-                    v-for="car in carStorage.cars">
-                    <div class="card list flex" 
-                        :style="{ width: '18rem', borderColor: 'black', margin: '10px' }" 
-                       >
-                        <img src="" class="card-img-top" alt="тут должна быть картинка">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ car.mark }} {{ car.model }}</h5>
-                            <p class="card-text">{{ car.description }}</p>
-                            <!-- <h5 class="card-text">{{ car.category.price }}$ В мес.</h5> -->
-                            <button href="#" class="btn btn-primary">Арендовать</button>
-                        </div>
+            <div  
+            v-else
+            v-for="car in carStorage.cars">
+                <div class="card list flex" 
+                    :style="{ width: '18rem', borderColor: 'black', margin: '10px' }" 
+                    >
+                    <img src="" class="card-img-top" alt="тут должна быть картинка">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ car.mark }} {{ car.model }}</h5>
+                        <p class="card-text">{{ car.description }}</p>
+                        <h5 class="card-text">{{ car.category.price }}$/мес.</h5>
+                        <RentCarModal :car="car"/>
                     </div>
                 </div>
-            
-            
+            </div>
         </div>
             <nav aria-label="Page navigation example" >
                 <ul class="pagination justify-content-center fixed-bottom">
@@ -72,9 +71,7 @@
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                             </li>
-                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item" v-for="(p, index) in [1,2,3]"><a class="page-link" href="#" @click="changeParams(p)">{{p}}</a></li>
                             <li class="page-item">
                             <a class="page-link" href="#" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
@@ -92,11 +89,20 @@ import { onBeforeMount } from 'vue';
 import axios from 'axios';
 import {useCategoryStorage} from '@/storages/CategoryStorage'
 import CarAddModal from './CarAddModal.vue';
-let change_button = ref(true)
+import RentCarModal from './RentCarModal.vue'
 
+let change_button = ref(true)
 const categoryStorage = ref(useCategoryStorage()) 
 const carStorage = ref(useCarStorage())
 const userStorage = ref(useUserStorage())
+
+const changeParams =(page) => {
+    carStorage.value.params.page = page
+    carStorage.value.setCarsFromServer(
+        carStorage.value.params.page,
+    )
+}
+
 const carHolder = {
     mark: '',
 	model: '',
@@ -104,6 +110,7 @@ const carHolder = {
 	category:'',
     picture: '',
 }
+
 const carChange = async (car_id) =>{
     try{
         const repsonce = await axios.put('/api/cars/'+car_id,carHolder,{
@@ -118,6 +125,7 @@ const carChange = async (car_id) =>{
         console.log(err)
     }
 }
+
 const deleteCar = async (id) => {
 
     try {
@@ -131,18 +139,23 @@ const deleteCar = async (id) => {
         alert('У вас нет прав админа')
         console.log(err)
 }
+
 carsStorage.value.setCarsFromServer()
 }
+
 const changePic = (event)=>{
     carHolder.picture = event.target.files[0]
     console.log(carHolder.picture)
 }
+
 const reg_button_click = (index)=>{
-    change_button.value*=-1
+    change_button.value = !change_button.value
 }
 
 onBeforeMount(()=>{
-	carStorage.value.setCarsFromServer(2,1)
+	carStorage.value.setCarsFromServer(
+        carStorage.value.params.page,
+    )
     categoryStorage.value.getCategoriesFromServer()
     if (!(JSON.parse(localStorage.getItem('user')) === null)){
 		userStorage.value.setUser(JSON.parse(localStorage.getItem('user')))

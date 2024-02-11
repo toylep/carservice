@@ -8,7 +8,7 @@
                 <hr>
                 <h3 class="card-title">Как к вам обращаться: {{userStorage.user.first_name}}</h3>  
                 <hr>
-                <h3 class="card-title">Баланс: {{userStorage.user.balance}}</h3>     
+                <h3 class="card-title">Баланс: {{userStorage.user.balance}}$</h3>     
 
                 <AddBalanceModal></AddBalanceModal>
             </div>

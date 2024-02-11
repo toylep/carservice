@@ -8,18 +8,13 @@
         </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        
-        
-      </ul>
-      <div class="d-flex">
-
         <div class="btn-group" v-if="userStorage.user.is_staff">
           <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
             <span class="visually-hidden">Toggle Dropdown</span>
           </button>
           <ul class="dropdown-menu">
             <li>
-              <RouterLink to="/">
+              <RouterLink to="/users">
                 <a class="dropdown-item" href="#" >Управление пользователями</a>
               </RouterLink>
             </li>  
@@ -33,7 +28,8 @@
           </ul>
           <button class="btn btn-light">Админская панель</button>
         </div>
-
+      </ul>
+      <div class="d-flex">
         <div class="btn-group">
           <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
             <span class="visually-hidden">Toggle Dropdown</span>
@@ -75,7 +71,7 @@ const logout = () =>{
  }
 onBeforeMount(()=>{
   if (JSON.parse(localStorage.getItem('user'))==user){
-    useUserStorage.value.setUserFromServer()
+    userStorage.value.setUserFromServer()
   }
 })
 </script>
